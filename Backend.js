@@ -1,62 +1,49 @@
-const fs = require("fs")
-const  yargs = require("yargs")
-const data7 = require("./data7")
+const express = require('express')
+const app = express()
 
+const port = process.env.PORT || 3000
 
+const path = require ("path")
+const publicDirectory =  path.join(__dirname , './Public')
+app.use (express.static (publicDirectory))
 
+app.set('view engine', 'hbs');
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-yargs.command({
-    command : "add",
-    describe : "to add an item",
-    builder : {
-        fname : {
-           describe :"this is the first name desc in add command",
-           demandOption : true ,
-           type : "string"
-        },
-        lname : {
-           describe :"this is the last name desc in add command",
-           demandOption : true ,
-           type : "string"
-        }
-      },
-    handler : (x)=>{
-        data7.addPerson(x.id , x.fname , x.lname , x.city , x.age)
-    }
+const viewsDirectory = path.join (__dirname , './Temp/views')
+app.set('views', viewsDirectory);
+
+var hbs = require('hbs');
+const partialsPath = path.join(__dirname , "./Temp/Partials")
+hbs.registerPartials(partialsPath)
+
+ 
+app.get ('/' , (req,res) => {
+    res.render('Person1' , {
+        title : "HOME",
+        desc : "This is home page"
+    })
 })
-////////////////////////////////////////////////////////////////////////////////////
 
-yargs.command({
-    command : "delete",
-    describe: "delete item",
-    handler : (x)=> {
-        data7.deleteData(x.id)
-    }
+app.get ('/Person2' , (req,res) => {
+    res.render('Person2' , {
+        title : "Person2",
+        name: "Abobakr",
+        city:"Jeddah",
+        age: 20,
+        img1: "images/trainer-3.jpg"
+    })
 })
- //////////////////////////////////////////////////////////////////////////////////
-yargs.command ({
-    command : "read",
-    describe : "read item",
-    builder : {
-        id : {
-            describe : "this is id desc in read command ",
-            demandOption : true,
-            type: "string"
-        }
-    },
-    handler: (x) => {
-        data7.readData(x.id)
-    }
-})
-////////////////////////////////////////////////////////////////////////////////////
-yargs.command ({
-    command : "list",
-    describe : "list data",
-    handler : () =>{
-       data7.listData()
-    }
-})
-/////////////////////////////////////////////////////////////////////////////////////
 
-yargs.parse()
+app.get ('/Person3' , (req,res) => {
+    res.render('Person3' , {
+        title : "Person3",
+        name: "fahad",
+        city:"Jeddah",
+        age: 21,
+        img2: "images/trainer-2.jpg"
+    })
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+    })
